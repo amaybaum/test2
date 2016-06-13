@@ -28,6 +28,17 @@ public class KMeans {
         findKMeansCentroids();
     }
 
+    public Instances quantize() {
+        Instances quantized = new Instances(instances);
+        for (int i = 0; i < instances.numInstances(); i++) {
+            Instance instance = instances.get(i);
+            int centroidIndex = findClosestCentroid(instance);
+            Instance centroid = centroids.get(centroidIndex);
+            quantized.set(i, centroid);
+        }
+        return quantized;
+    }
+
     private void initializeCentroids() {
         instances.randomize(new Random());
         for (int i = 0; i < k; i++) {
@@ -38,15 +49,13 @@ public class KMeans {
     private void findKMeansCentroids() {
         double error = calcAvgWSSSE();
         double difference = error;
-        while (difference > 0.05) {
+        while (difference > 1) {
             error = calcAvgWSSSE();
             assignment();
             chooseRepresentative();
             double updatedError = calcAvgWSSSE();
             difference = Math.abs(error - updatedError);
         }
-        Instances q = quantize();
-        System.out.println(q);
     }
 
     private void assignment() {
@@ -103,16 +112,5 @@ public class KMeans {
             sum += distance;
         }
         return Math.sqrt(sum);
-    }
-
-    private Instances quantize() {
-        Instances quantized = new Instances(instances);
-        for (int i = 0; i < instances.numInstances(); i++) {
-            Instance instance = instances.get(i);
-            int centroidIndex = findClosestCentroid(instance);
-            Instance centroid = centroids.get(centroidIndex);
-            quantized.set(i, centroid);
-        }
-        return quantized;
     }
 }

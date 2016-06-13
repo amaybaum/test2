@@ -101,12 +101,11 @@ public class Hw7Main {
         for (int k = 0; k < clusters.length; k++) {
             KMeans kMeans = new KMeans(clusters[k], instances);
             kMeans.buildClusterModel();
+			Instances q = kMeans.quantize();
+			BufferedImage out = convertInstancesToImg(q, image.getWidth(), image.getHeight());
+			File outputfile = new File("output" + clusters[k] + ".jpg");
+			ImageIO.write(out, "jpg", outputfile);
         }
-
-
-        BufferedImage out = null;
-        File outputfile= new File("output.jpg");
-        ImageIO.write(out, "jpg", outputfile);
 		
 		//run PCA looping over number of principal components and print the average
 		// distance of transformed instances from original instances
