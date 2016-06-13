@@ -36,9 +36,11 @@ public class KMeans {
     }
 
     private void findKMeansCentroids() {
-        assignment();
-        chooseRepresentative();
-        //quantize();
+        for (int i = 0; i < 40; i++) {
+            assignment();
+            chooseRepresentative();
+            //quantize();
+        }
     }
 
     private void assignment() {
@@ -50,15 +52,16 @@ public class KMeans {
     }
 
     private void chooseRepresentative() {
-        for (int c = 0; c < clusters.size(); c++) {
-            Instances cluster = clusters.get(c);
-            for (int attribute = 0; attribute < cluster.numAttributes(); attribute++) {
+        for (int clusterIndex = 0; clusterIndex < clusters.size(); clusterIndex++) {
+            Instances cluster = clusters.get(clusterIndex);
+            // Skip first attribute
+            for (int attributeIndex = 1; attributeIndex < cluster.numAttributes(); attributeIndex++) {
                 double sum = 0;
-                for (int i = 0; i < instances.numInstances(); i++) {
-                    sum += instances.get(i).value(attribute);
+                for (int instanceIndex = 0; instanceIndex < cluster.numInstances(); instanceIndex++) {
+                    sum += cluster.get(instanceIndex).value(attributeIndex);
                 }
-                double average = sum / instances.numInstances();
-                centroids.get(c).setValue(attribute, average);
+                double average = sum / cluster.numInstances();
+                centroids.get(clusterIndex).setValue(attributeIndex, average);
             }
         }
     }
