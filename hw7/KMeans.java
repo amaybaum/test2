@@ -40,11 +40,14 @@ public class KMeans {
     }
 
     private void initializeCentroids() {
-        instances.randomize(new Random());
+        
+        Instances copyOfInstances = new Instances(instances);
+        copyOfInstances.randomize(new Random());
         for (int i = 0; i < k; i++) {
-            centroids.add(i, instances.get(i));
+            centroids.add(i, copyOfInstances.get(i));
         }
     }
+    
 
     private void findKMeansCentroids() {
         double error = calcAvgWSSSE();
