@@ -109,7 +109,38 @@ public class Hw7Main {
 		
 		//run PCA looping over number of principal components and print the average
 		// distance of transformed instances from original instances
-
+		Instances data = new Instances(readDataFile("libras.txt"));
+		double averageDistance;
+		
+		for (int i = 13; i <= 90; i++) {
+			PrincipalComponents pca = new PrincipalComponents();
+			pca.setNumPrinComponents(i);
+			pca.setTransformBackToOriginal(true);
+			pca.buildEvaluator(data);
+			Instances data2 = pca.transformedData(data);
+			averageDistance = calcAvgDistance(data, data2);
+			System.out.println(averageDistance);
+		}
 	}
 
+	private static double calcAvgDistance(Instances data, Instances data2) {
+		
+		double sum = 0;
+		for (int i = 0; i < data.numInstances(); i++) {
+			sum += calcSquaredDistance(data.get(i), data2.get(i));
+		}
+		return sum / data.numInstances();
+	}
+	
+    private static double calcSquaredDistance (Instance instance1, Instance instance2) {
+        
+    	double sum = 0;
+    	double difference;
+        for (int i = 0; i < instance1.numAttributes(); i++) {
+        	
+            difference = instance1.value(i) - instance2.value(i);
+            sum += Math.pow(difference, 2);
+        }
+        return Math.sqrt(sum);
+    }
 }
