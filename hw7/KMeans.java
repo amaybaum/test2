@@ -9,17 +9,20 @@ import java.util.Random;
 public class KMeans {
 
     private int k;
+    private int n;
     private Instances instances;
     private Instances centroids;
-    private ArrayList<Instances> clusters;
+    //private ArrayList<Instances> clusters;
+    private ArrayList<ArrayList<Instance>> clusters;
 
     KMeans(int k, Instances instances) {
         this.k = k;
+        this.n = instances.numInstances();
         this.instances = instances;
         this.centroids = new Instances(instances, k);
         this.clusters = new ArrayList<>(k);
         for (int i = 0; i < k; i++) {
-            clusters.add(new Instances(instances, instances.numInstances()));
+            clusters.add(new ArrayList<>());
         }
     }
 
@@ -30,7 +33,7 @@ public class KMeans {
 
     public Instances quantize() {
         Instances quantized = new Instances(instances);
-        for (int i = 0; i < instances.numInstances(); i++) {
+        for (int i = 0; i < n; i++) {
             Instance instance = instances.get(i);
             int centroidIndex = findClosestCentroid(instance);
             Instance centroid = centroids.get(centroidIndex);
@@ -40,7 +43,6 @@ public class KMeans {
     }
 
     private void initializeCentroids() {
-        
         Instances copyOfInstances = new Instances(instances);
         copyOfInstances.randomize(new Random());
         for (int i = 0; i < k; i++) {
@@ -58,27 +60,29 @@ public class KMeans {
             chooseRepresentative();
             double updatedError = calcAvgWSSSE();
             difference = Math.abs(error - updatedError);
+            System.out.println(difference);
         }
     }
 
     private void assignment() {
-        for (int i = 0; i < instances.numInstances(); i++) {
+        for (int i = 0; i < n; i++) {
             Instance instance = instances.get(i);
             int closestCentroid = findClosestCentroid(instance);
+            //clusters.get(closestCentroid).add(instance);
             clusters.get(closestCentroid).add(instance);
         }
     }
 
     private void chooseRepresentative() {
         for (int clusterIndex = 0; clusterIndex < clusters.size(); clusterIndex++) {
-            Instances cluster = clusters.get(clusterIndex);
+            ArrayList<Instance> cluster = clusters.get(clusterIndex);
             // Skip first attribute
-            for (int attributeIndex = 1; attributeIndex < cluster.numAttributes(); attributeIndex++) {
+            for (int attributeIndex = 1; attributeIndex < instances.numAttributes(); attributeIndex++) {
                 double sum = 0;
-                for (int instanceIndex = 0; instanceIndex < cluster.numInstances(); instanceIndex++) {
+                for (int instanceIndex = 0; instanceIndex < cluster.size(); instanceIndex++) {
                     sum += cluster.get(instanceIndex).value(attributeIndex);
                 }
-                double average = sum / cluster.numInstances();
+                double average = sum / cluster.size();
                 centroids.get(clusterIndex).setValue(attributeIndex, average);
             }
         }
@@ -107,7 +111,7 @@ public class KMeans {
 
     private double calcAvgWSSSE() {
         double sum = 0;
-        for (int i = 0; i < instances.numInstances(); i++) {
+        for (int i = 0; i < n; i++) {
             Instance instance = instances.get(i);
             int centroidIndex = findClosestCentroid(instance);
             Instance centroid = centroids.get(centroidIndex);

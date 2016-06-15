@@ -95,7 +95,7 @@ public class Hw7Main {
 
 	public static void main(String[] args) throws Exception {
 		 //create instances object from image and quantize it using Kmeans
-		BufferedImage image = ImageIO.read(new File("baboon_face.jpg"));
+		BufferedImage image = ImageIO.read(new File("sunset.jpg"));
         Instances instances = convertImgToInstances(image);
         int[] clusters = {2, 3, 5, 10, 25, 50, 100, 256};
         for (int k = 0; k < clusters.length; k++) {
