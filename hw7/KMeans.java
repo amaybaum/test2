@@ -4,6 +4,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class KMeans {
@@ -12,8 +13,7 @@ public class KMeans {
     private int n;
     private Instances instances;
     private Instances centroids;
-    //private ArrayList<Instances> clusters;
-    private ArrayList<ArrayList<Instance>> clusters;
+    private List<List<Instance>> clusters;
 
     KMeans(int k, Instances instances) {
         this.k = k;
@@ -54,7 +54,7 @@ public class KMeans {
     private void findKMeansCentroids() {
         double error = calcAvgWSSSE();
         double difference = error;
-        while (difference > 1) {
+        while (difference > 500) {
             error = calcAvgWSSSE();
             assignment();
             chooseRepresentative();
@@ -68,14 +68,13 @@ public class KMeans {
         for (int i = 0; i < n; i++) {
             Instance instance = instances.get(i);
             int closestCentroid = findClosestCentroid(instance);
-            //clusters.get(closestCentroid).add(instance);
             clusters.get(closestCentroid).add(instance);
         }
     }
 
     private void chooseRepresentative() {
         for (int clusterIndex = 0; clusterIndex < clusters.size(); clusterIndex++) {
-            ArrayList<Instance> cluster = clusters.get(clusterIndex);
+            List<Instance> cluster = clusters.get(clusterIndex);
             // Skip first attribute
             for (int attributeIndex = 1; attributeIndex < instances.numAttributes(); attributeIndex++) {
                 double sum = 0;
@@ -83,7 +82,8 @@ public class KMeans {
                     sum += cluster.get(instanceIndex).value(attributeIndex);
                 }
                 double average = sum / cluster.size();
-                centroids.get(clusterIndex).setValue(attributeIndex, average);
+                Instance centroid = centroids.get(clusterIndex);
+                centroid.setValue(attributeIndex, average);
             }
         }
     }
