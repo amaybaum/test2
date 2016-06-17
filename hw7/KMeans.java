@@ -54,7 +54,7 @@ public class KMeans {
     private void findKMeansCentroids() {
         double error = calcAvgWSSSE();
         double difference = error;
-        while (difference > 5) {
+        while (difference > 0.1) {
             error = calcAvgWSSSE();
             assignment();
             chooseRepresentative();
@@ -118,6 +118,6 @@ public class KMeans {
             double distance = calcSquaredDistance(instance, centroid);
             sum += distance;
         }
-        return Math.sqrt(sum);
+        return sum / n;
     }
 }
