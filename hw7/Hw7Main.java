@@ -124,7 +124,6 @@ public class Hw7Main {
 	}
 
 	private static double calcAvgDistance(Instances data, Instances data2) {
-		
 		double sum = 0;
 		for (int i = 0; i < data.numInstances(); i++) {
 			sum += calcSquaredDistance(data.get(i), data2.get(i));
@@ -133,11 +132,9 @@ public class Hw7Main {
 	}
 	
     private static double calcSquaredDistance (Instance instance1, Instance instance2) {
-        
     	double sum = 0;
     	double difference;
         for (int i = 0; i < instance1.numAttributes(); i++) {
-        	
             difference = instance1.value(i) - instance2.value(i);
             sum += Math.pow(difference, 2);
         }

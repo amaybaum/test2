@@ -27,6 +27,7 @@ public class KMeans {
     }
 
     public void buildClusterModel() {
+        System.out.println(String.format("Running kMeans for K =  %d", k));
         initializeCentroids();
         findKMeansCentroids();
     }
@@ -49,18 +50,17 @@ public class KMeans {
             centroids.add(i, copyOfInstances.get(i));
         }
     }
-    
 
     private void findKMeansCentroids() {
         double error = calcAvgWSSSE();
         double difference = error;
-        while (difference > 500) {
+        while (difference > 5) {
             error = calcAvgWSSSE();
             assignment();
             chooseRepresentative();
             double updatedError = calcAvgWSSSE();
             difference = Math.abs(error - updatedError);
-            System.out.println(difference);
+            System.out.println(String.format("AvgWSSSE delta: %f", difference));
         }
     }
 
